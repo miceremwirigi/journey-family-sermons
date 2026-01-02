@@ -1,0 +1,114 @@
+document.addEventListener("click", (e) => {
+    const row = e.target.closest('.clickable_row');
+    if(row && row.dataset.href) {
+        window.location.href = row.dataset.href;
+    }
+});
+
+let allVideos = [];
+let currentPage = 1;
+const rowsPerPage = 5;
+
+async function loadVideos() {
+    const spinner = document.querySelector(".spinner-container");
+    const tableBody = document.querySelector(".sermon-list tbody");
+
+    if (spinner) spinner.style.display = 'flex';
+
+    try {
+        const response = await fetch('http://localhost:3000/videos');
+        allVideos = await response.json(); // Store all data globally
+        renderTable();
+    } catch (error) {
+        console.error("Error loading videos: ", error);
+        tableBody.innerHTML = "<tr><td colspan='5'> Error loading videos.</td></tr>";
+    } finally {
+        if (spinner) spinner.style.display = 'none';
+    }
+}
+
+function renderTable() {
+    const tableBody = document.querySelector(".sermon-list tbody");
+    tableBody.innerHTML = "";
+
+    // Calculate start and end indices
+    const start = (currentPage - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
+    const paginatedItems = allVideos.slice(start, end);
+
+    paginatedItems.forEach((video, index) => {
+        const globalIndex = start + index + 1;
+        const row = document.createElement("tr");
+        row.className = "clickable_row";
+        row.dataset.href = `https://www.youtube.com/watch?v=${video.ID}`;
+
+        row.innerHTML = `
+            <td>${globalIndex}</td>
+            <td>
+                <iframe width="200" height="113"
+                    src="https://www.youtube.com/embed/${video.ID}"
+                    frameborder="0" allowfullscreen>
+                </iframe>
+            </td>
+            <td data-label="Title">${video.Title}</td>
+            <td data-label="Date">${new Date(video.PublishedAt).toLocaleDateString('en-GB')}</td>
+            <td data-label="Action">
+                <button class="download__btn"
+                    onclick="event.stopPropagation(); window.location.href='https://www.sosyoutube.com/watch?v=${video.ID}'">
+                    Convert to mp3
+                </button>
+            </td>
+        `;
+        tableBody.appendChild(row);
+    });
+
+    renderPagination();
+}
+
+function renderPagination() {
+    const controls = document.getElementById("pagination-controls");
+    const totalPages = Math.ceil(allVideos.length / rowsPerPage);
+    controls.innerHTML = "";
+
+    // Prev Button
+    const prevBtn = document.createElement("button");
+    prevBtn.innerText = "«";
+    prevBtn.disabled = currentPage === 1;
+    prevBtn.onclick = () => { currentPage--; renderTable(); };
+    controls.appendChild(prevBtn);
+
+    // Page Numbers
+    for (let i = 1; i <= totalPages; i++) {
+        const btn = document.createElement("button");
+        btn.innerText = i;
+        if (i === currentPage) btn.className = "active";
+        btn.onclick = () => { currentPage = i; renderTable(); };
+        controls.appendChild(btn);
+    }
+
+    // Next Button
+    const nextBtn = document.createElement("button");
+    nextBtn.innerText = "»";
+    nextBtn.disabled = currentPage === totalPages;
+    nextBtn.onclick = () => { currentPage++; renderTable(); };
+    controls.appendChild(nextBtn);
+}
+
+
+const menu = document.querySelector('#mobile-menu');
+const menuLinks = document.querySelector('.navbar__menu');
+
+menu.addEventListener('click', function() {
+    menu.classList.toggle('is-active');
+    menuLinks.classList.toggle('active');
+});
+
+function init() {
+    loadVideos()
+}
+
+if (document.readyState !== "loading"){
+    init()
+} else {
+    document.addEventListener("DOMContentLoaded", init)
+}

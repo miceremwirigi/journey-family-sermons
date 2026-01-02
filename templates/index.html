@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="static/favicon.jpg" onerror="this.onerror=null; this.href='favicon.jpg';">
+    <link rel="stylesheet" href="static/style.css" onerror="this.onerror=null; this.href='style.css';">
+    <title>Journey Family Sermons</title>
+</head>
+<body>
+    <div class="header">
+        <div class="navbar__container">
+            <img src="static/favicon.png" alt=""  onerror="this.onerror=null; this.src='favicon.png';">
+            <a href="#" id="navbar__logo">Sermons</a>
+            <div class="navbar__toggle" id="mobile-menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+            <ul class="navbar__menu">
+                <li class="navbar__item">
+                    <a href="#" class="navbar__links">
+                        Home
+                    </a>
+                </li>
+                <li class="navbar__item">
+                    <a href="#" class="navbar__links">
+                        Sort
+                    </a>
+                </li>
+                <li class="navbar__item">
+                    <a href="#" class="navbar__links">
+                        Filter
+                    </a>
+                </li>
+                <li class="navbar__item">
+                    <a href="#" class="navbar__links"
+                        class="search-bar"> Search
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="content">
+        <div class="sermon-list">
+            <div class="spinner-container" id="loading-spinner">
+                <span class="loader"></span>
+            </div>
+            <table>
+                <thead>
+                    <!-- <th>#</th> -->
+                    <!-- <th>Video</th>
+                    <th>Title</th>
+                    <th>Date</th>
+                    <th>Button</th> -->
+                </thead>
+                <tbody>
+                    <tr><td colspan="5">Loading Sermons ...</td></tr>
+                </tbody>
+            </table>
+            <div id="pagination-controls" class="pagination"></div>
+        </div>
+    </div>
+    <div class="footer"></div>  
+    <script>
+        // reloads js from a different path from './static' when not renderd by fiber
+        function loadScript(url, fallbackUrl) {
+            let script = document.createElement("script");
+            script.src = url;
+            script.onerror = () => {
+                console.warn(`Failed to load ${url}. Switching to fallback.`)
+                let fallback = document.createElement("script");
+                fallback.src = fallbackUrl;
+                document.head.appendChild(fallback);
+            }
+            document.head.appendChild(script);
+        }
+        loadScript("static/app.js","app.js")
+    </script>  
+</body>
+</html>
