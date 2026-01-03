@@ -16,7 +16,7 @@ async function loadVideos() {
     if (spinner) spinner.style.display = 'flex';
 
     try {
-        const response = await fetch('http://localhost:3000/videos');
+        const response = await fetch('/videos');
         allVideos = await response.json(); // Store all data globally
         renderTable();
     } catch (error) {
