@@ -7,7 +7,6 @@ import (
 
 
 func LoadTestDatabaseConfig() (env, db_host, db_user, db_pass, test_db_name, db_ssl, db_port string, err error) {
-	os.Setenv("env", "test")
 	db_host, set := os.LookupEnv("db_host")
 	if !set {
 		return "", "", "", "", "", "", "", errors.New("db_host environment variable not set")
