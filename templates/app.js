@@ -43,7 +43,7 @@ function renderTable() {
         row.dataset.href = `https://www.youtube.com/watch?v=${video.ID}`;
 
         row.innerHTML = `
-            <td>${globalIndex}</td>
+            <!-- <td>${globalIndex}</td> -->
             <td>
                 <iframe width="200" height="113"
                     src="https://www.youtube.com/embed/${video.ID}"

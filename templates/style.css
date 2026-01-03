@@ -254,12 +254,13 @@ td .download__btn{
         display: grid;
         grid-template-columns: auto;
         margin: 0;
+        padding: 0;
         width: 100%;
         position: absolute;
         top: -1000px; /* Hidden by default */
         opacity: 0;
         transition: all 0.5s ease;
-        height: 50vh;
+        height: 40vh;
         z-index: -1;
         background: #2D6A6A;
     }
@@ -273,7 +274,7 @@ td .download__btn{
         z-index: 99;
         height: auto;
         padding-bottom: 2rem;
-        font-size: 1.6rem;
+        font-size: 1.4rem;
     }
 
     .navbar__container img {
@@ -302,7 +303,7 @@ td .download__btn{
 
     .navbar__links {
         text-align: center;
-        padding: 2rem;
+        padding: 1rem;
         width: 100%;
         display: table;
     }
@@ -353,12 +354,21 @@ td .download__btn{
     .sermon-list td { 
         border: none;
         position: relative;
-        padding-left: 50%; 
-        text-align: right;
+        justify-content: center;
+        /* padding-left: 50%;  */
+        text-align: left;
         border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
 
-    /* Add labels for the table data via CSS */
+    .sermon-list td iframe {
+        width: 90%;
+        aspect-ratio: 16 / 9; /* Maintains video proportions automatically */
+        display: block;       /* Allows margin auto to work */
+        margin: 0 auto;       /* Centers the iframe horizontally */
+        border: none;         /* Optional: removes default border */
+    }
+
+    /* Add labels for the table data via CSS
     .sermon-list td:before { 
         position: absolute;
         left: 15px;
@@ -369,10 +379,21 @@ td .download__btn{
         font-weight: bold;
         color: #a3c2c2;
         content: attr(data-label); /* Requires data-label in HTML */
-    }
+    /* } */ */
 
     .download__btn {
         width: 100%;
         justify-content: center;
+    }
+
+    .pagination {
+        max-width: 90%;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 5px;
+        margin-top: 20px;
+        padding-bottom: 20px;
+        padding-right: 5px;
     }
 }
