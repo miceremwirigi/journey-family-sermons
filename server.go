@@ -21,7 +21,7 @@ func main() {
 	})
 
 	app.Use(cors.New(cors.Config{
-		AllowOrigins: "http://localhost:3000, http://localhost:5500, http://127.0.0.1:3000, http://127.0.0.1:5500",
+		AllowOrigins: "http://127.0.0.1:3000, http://127.0.0.1:5500, https://journey-family-sermons.onrender.com, https://journey-family-sermons-miceremwirigi268-ccj540ay.leapcell.dev",
 		AllowHeaders: "Origin, Content-Type, Accept",
 		AllowMethods: "GET, POST, OPTIONS",
 	}))

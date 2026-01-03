@@ -1,3 +1,4 @@
 *.sh
+*.env
 *.pdf
 sample.json
