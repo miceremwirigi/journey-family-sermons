@@ -19,7 +19,17 @@ type ConverterResponse struct {
 	Filename string `json:"filename"`
 }
 
-func (h *Handler) GetVideoDownloadLink(c *fiber.Ctx) error {
+func (h *Handler) GetMp4DownloadLink(c *fiber.Ctx) error {
+	videoID := c.Params("videoid")
+	linkData, err := seekDownloadLinkmp4(videoID)
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(linkData)
+}
+
+func (h *Handler) GetMp3DownloadLink(c *fiber.Ctx) error {
 	videoID := c.Params("videoid")
 	linkData, err := seekDownloadLinkmp3(videoID)
 	if err != nil {
