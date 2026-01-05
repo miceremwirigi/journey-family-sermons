@@ -32,6 +32,10 @@ func main() {
 		return c.Render("index", fiber.Map{})
 	})
 
+	app.Get("/admin", func(c *fiber.Ctx) error {
+		return c.Render("admin", fiber.Map{})
+	})
+
 	conf := config.LoadConfig()
 
 	db := databases.StartDatabase(conf.Environment)

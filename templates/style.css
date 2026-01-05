@@ -15,13 +15,11 @@ body {
 }
 
 .header {
-  /* Solid deep teal from the logo */
   background: #2d6a6a;
-  height: 80px;
+  height: 70px; 
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 1.2rem;
   position: sticky;
   top: 0;
   z-index: 999;
@@ -76,7 +74,11 @@ body {
 }
 
 .navbar__item {
-  height: 80px;
+  height: 60px;
+}
+
+.dynamic-playlist {
+    height: 60px;
 }
 
 .navbar__links {
@@ -211,41 +213,114 @@ td .download__mp3__btn {
 .pagination {
   display: flex;
   justify-content: center;
-  gap: 5px;
-  margin-top: 20px;
-  padding-bottom: 20px;
+  align-items: center;
+  gap: 9px;
+  margin-top: 30px;
+  padding-bottom: 40px;
 }
 
 .pagination button {
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  background-color: white;
+  padding: 10px 16px;
+  border: 1px solid rgba(45, 106, 106, 0.4);
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #f0f4f4;
   cursor: pointer;
-  border-radius: 4px;
-  transition: background 0.2s;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  min-width: 45px;
+  font-weight: 600;
 }
 
 .pagination button:hover:not(:disabled) {
-  background-color: #f0f0f0;
+  background-color: #2d6a6a;
+  border-color: #a3c2c2;
 }
 
 .pagination button.active {
-  background-color: #0f1a1a;
-  color: white;
-  border-color: #0f1a1a;
+  background-color: #2d6a6a;
+  color: #ffffff;
+  border-color: #ffffff;
+  box-shadow: 0 0 10px rgba(45, 106, 106, 0.5);
 }
 
 .pagination button:disabled {
   cursor: not-allowed;
-  opacity: 0.5;
+  opacity: 0.3;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.pagination-dots {
+  color: #a3c2c2;
+  font-weight: bold;
+  padding: 0 5px;
+}
+
+.pagination-go {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: 15px;
+  border-left: 1px solid rgba(45, 106, 106, 0.4);
+  padding-left: 15px;
+}
+
+.pagination-go input {
+  width: 60px;
+  padding: 8px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(45, 106, 106, 0.4);
+  color: white;
+  text-align: center;
+}
+
+#jump-btn {
+  padding: 8px 12px;
+  background: #2d6a6a;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+/* Admin Link Styling */
+.admin-nav-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #d4af37; 
+  border-radius: 4px;
+  margin-left: 15px;
+  padding: 0 15px;
+  height: 35px !important;
+  align-self: center;
+  transition: all 0.3s ease;
+}
+
+.admin-nav-item .navbar__links {
+  color: #0f1a1a !important;
+  font-weight: bold;
+  padding: 0;
+  height: auto;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+}
+
+.admin-nav-item:hover {
+  background-color: #ffcf40;
+  transform: translateY(-1px);
 }
 
 /* Mobile Menu Logic */
 @media screen and (max-width: 960px) {
+  .header {
+    height: 50px; /* Even thinner on mobile */
+  }
+  
   .navbar__container {
     display: flex;
     justify-content: space-between;
-    height: 80px;
+    height: 60px;
     z-index: 1;
     width: 100%;
     max-width: 1300px;
@@ -261,7 +336,7 @@ td .download__mp3__btn {
     position: absolute;
     top: -1000px; /* Hidden by default */
     opacity: 0;
-    transition: all 0.5s ease;
+    transition: all 0.3s ease;
     height: 40vh;
     z-index: -1;
     background: #2d6a6a;
@@ -272,7 +347,7 @@ td .download__mp3__btn {
     background: #245555;
     top: 100%;
     opacity: 1;
-    transition: all 0.5s ease;
+    transition: all 0.3s ease;
     z-index: 99;
     height: auto;
     padding-bottom: 2rem;
@@ -281,11 +356,13 @@ td .download__mp3__btn {
 
   .navbar__container img {
     margin-left: 1rem;
+    height: 40px;
+    width: 40px;
   }
 
   #navbar__logo {
-    padding-left: 25px;
     margin-right: auto;
+    font-size: 1.4rem;
   }
 
   /* Hamburger Icon */
@@ -317,6 +394,17 @@ td .download__mp3__btn {
     transform: translate(5%, 20%);
   }
 
+  .dynamic-playlist {
+        width: 100%;
+        height: auto;
+    }
+
+  .dynamic-playlist .navbar__links {
+      padding: 1.5rem;
+      background: rgba(0,0,0,0.1); /* Subtle distinction for playlist items */
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+
   /* Animation for the hamburger into an 'X' */
   #mobile-menu.is-active .bar:nth-child(2) {
     opacity: 0;
@@ -334,6 +422,10 @@ td .download__mp3__btn {
   .content {
     padding: 1rem;
   }
+
+  .navbar__item:first-child {
+        margin-top: 20px; /* Gives the Home link some breathing room in the mobile drawer */
+    }
 
   /* Force table to not behave like a table anymore */
   .sermon-list table,
@@ -394,13 +486,31 @@ td .download__mp3__btn {
   }
 
   .pagination {
-    max-width: 90%;
-    display: flex;
     flex-wrap: wrap;
-    justify-content: center;
-    gap: 5px;
-    margin-top: 20px;
+    gap: 10px;
     padding-bottom: 20px;
-    padding-right: 5px;
+  }
+  
+  .pagination button {
+    padding: 8px 10px;
+    min-width: 38px;
+    font-size: 0.8rem;
+  }
+
+  .pagination-go {
+    border-left: none; /* Remove vertical divider on mobile */
+    border-bottom: 1px solid rgba(45, 106, 106, 0.4); /* Add horizonla divider instead */
+    padding-left: 0;
+    padding-top: 10px;
+    width: 100%; /* Force 'Go to Page' on its own line */
+    justify-content: center;
+  }
+
+  .admin-nav-item {
+    margin: 10px 0;
+    width: 90%; /* Make admin button appear wiser in the mobile menu */
+    display: flex;
+    justify-content: center;
+    justify-self: center;
   }
 }
