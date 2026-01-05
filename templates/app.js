@@ -53,9 +53,15 @@ function renderTable() {
             <td data-label="Title">${video.Title}</td>
             <td data-label="Date">${new Date(video.PublishedAt).toLocaleDateString('en-GB')}</td>
             <td data-label="Action">
-                <button class="download__btn"
+                <button class="download__mp3__btn"
                     onclick="event.stopPropagation(); downloadmp3(event, '${video.ID}')">
-                    Convert to mp3
+                    Download mp3
+                </button>
+            </td>
+            <td data-label="Action2">
+                <button class="download__mp3__btn"
+                    onclick="event.stopPropagation(); downloadmp4(event, '${video.ID}')">
+                    Download mp4
                 </button>
             </td>
         `;
@@ -118,7 +124,7 @@ async function downloadmp3(e, videoId){
     btn.disabled = true;
     btn.innerText = "Converting..."
 
-    const fetchlink = `download/${videoId}`;
+    const fetchlink = `download/mp3/${videoId}`;
     try{
         const data = await fetchWithTimeout(fetchlink, { timeout: 12000 });
 
@@ -166,5 +172,32 @@ async function fetchWithTimeout(resource, options = {}) {
         } else {
             console.error("Request failed:", error);
         }
+    }
+}
+
+async function downloadmp4(e, videoId){
+    const btn = e.currentTarget;
+    btn.disabled = true;
+    btn.innerText = "Converting..."
+
+    const fetchlink = `download/mp4/${videoId}`;
+    try{
+        const data = await fetchWithTimeout(fetchlink, { timeout: 12000 });
+
+        if (!data || data.status !=='tunnel') {
+            console.log("Initial fetch url failed or invalid status")
+        }
+
+        window.location.href = data.url
+
+        // Artificial delay to keep button disabled while user sees converting ...
+        await new Promise(resolve => setTimeout(resolve, 4000))
+        
+    } catch (error) {
+        console.error("Fetch failed:", error.message)
+        alert("Error: " + error.message)
+    } finally {
+        btn.disabled = false;
+        btn.innerText = "Convert to mp4"
     }
 }
