@@ -532,10 +532,15 @@ async function downloadmp3(e, videoId){
 
     const fetchlink = `download/mp3/${videoId}`;
     try{
-        const data = await fetchWithTimeout(fetchlink, { timeout: 12000 });
+        const data = await fetchWithTimeout(fetchlink, { timeout: 30000 });
+
+        if(!data) {
+            throw new Error("Server did not respond in time.")
+        }
 
         if (!data || data.status !=='tunnel') {
-            console.log("Initial fetch url failed or invalid status")
+            console.log("Initial fetch url failed or invalid status");
+            throw new Error("Invalid server response status.")
         }
 
         window.location.href = data.url
