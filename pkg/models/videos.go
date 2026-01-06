@@ -24,6 +24,11 @@ type ThumbnailData struct {
 	Maxres     string
 }
 
+type PlaylistVideo struct {
+    YoutubePlaylistID string `gorm:"primaryKey"`
+    YoutubeVideoID    string `gorm:"primaryKey"`
+}
+
 // Value implements the driver.Valuer interface for GORM to save as JSON
 func (t ThumbnailData) Value() (driver.Value, error) {
 	return json.Marshal(t)
