@@ -51,6 +51,23 @@
             <div class="spinner-container" id="loading-spinner">
                 <span class="loader"></span>
             </div>
+            <div class="filter-container">
+                <div class="search-wrapper">
+                    <input 
+                        type="text"
+                        id="video-search"
+                        placeholder="Search by title..."
+                        oninput="debouncedSearch()"
+                    >
+                    <button type="button" onclick="handleSearch()" class="search-btn">🔍</button>
+                </div>
+                <select id="sort-filter" onchange="handleSort()">
+                    <option value="newest">Newest First</option>
+                    <option value="oldest">Oldest First</option>
+                    <option value="title-asc">Title (A-Z)</option>
+                    <option value="title-dsc">Title (Z-A)</option>
+                </select>
+            </div>
             <table>
                 <thead>
                     <!-- <th>#</th> -->

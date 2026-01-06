@@ -16,6 +16,7 @@ func main() {
 	_ = db.Migrator().DropTable(models.YoutubeVideo{})
 	_ = db.Migrator().DropTable(models.ThumbnailData{})
 	_ = db.Migrator().DropTable(models.YoutubePlaylist{})
+	_ = db.Migrator().DropTable(models.PlaylistVideo{}) // Join table for the playlist to video many to many
 
 	log.Println("Migration successful")
 }

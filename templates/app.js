@@ -11,7 +11,14 @@ const navBarDefaultItems = `
                     </a>
                 </li>
             `;
-
+const debouncedSearch = debounce(() => {
+    const val = document.getElementById("video-search").value;
+    if (val === "") {
+        handleSearch(); // run immediately if input is empty or cleared
+    }else {
+        handleSearch();
+    }
+}, 700);
 
 document.addEventListener("click", (e) => {
     const row = e.target.closest('.clickable_row');
@@ -161,20 +168,31 @@ async function loadPlaylistItems(playlistId) {
 //     loadedMenus
 // }
 
-function renderTable() {
+function renderTable(dataToRender = allVideos) {
     const tableBody = document.querySelector(".sermon-list tbody");
+    if (!tableBody) return;
     tableBody.innerHTML = "";
 
     // Calculate start and end indices
     const start = (currentPage - 1) * rowsPerPage;
     const end = start + rowsPerPage;
-    const paginatedItems = allVideos.slice(start, end);
+    const paginatedItems = dataToRender.slice(start, end);
 
+    if (paginatedItems.length === 0) {
+        const isSearching = document.getElementById("video-search").value !== "";
+
+        tableBody.innerHTML = isSearching
+            ? "<tr><td colspan='5' style='text-align:center; padding: 20px;'>🔍 videos matching your search criteria</td></tr>"
+            : "<tr><td colspan='5' style='text-align:center; padding: 20px;'>No videos available in this list</td></tr>";
+            
+        const controls = DocumentTimeline.getElementById("pagination-controls"); // clear pagination if no item is found
+        if (controls) controls.innerHTML="";
+        return
+    }
     paginatedItems.forEach((video, index) => {
         const globalIndex = start + index + 1;
         const row = document.createElement("tr");
         row.className = "clickable_row";
-        // row.dataset.href = `https://www.youtube.com/watch?v=${video.ID}`;
 
         row.innerHTML = `
             <!-- <td>${globalIndex}</td> -->
@@ -202,7 +220,7 @@ function renderTable() {
         tableBody.appendChild(row);
     });
 
-    renderPagination();
+    renderPagination(dataToRender.length, dataToRender);
 }
 
 // ***********************************************************************//
@@ -210,9 +228,9 @@ function renderTable() {
 
 // ***************Pagination Logic*******************************//
 
-function renderPagination() {
+function renderPagination(totalItems, dataReference = allVideos) {
     const controls = document.getElementById("pagination-controls");
-    const totalPages = Math.ceil(allVideos.length / rowsPerPage);
+    const totalPages = Math.ceil(totalItems / rowsPerPage);
     if (totalPages <=1) {
         controls.innerHTML="";
         return
@@ -227,7 +245,7 @@ function renderPagination() {
         if (active) btn.className = "active";
         btn.onclick = () => {
             currentPage = page;
-            renderTable();
+            renderTable(dataReference);
             window.scrollTo({ top: 0, behavior: 'smooth'});
         }
         return btn;
@@ -295,6 +313,12 @@ function init() {
     if (!window.location.pathname.includes("admin")){
     loadSermonVideos();
     toggleListDisplay();
+    document.getElementById("video-search").addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+            e.preventDefault(); // prevent page reload
+            handleSearch();
+        }
+    });
     }
 }
 
@@ -340,7 +364,7 @@ async function triggerUpdate(endpoint) {
         });
         
         if (response.ok) {
-            alert("Update triggered successfully!");
+            alert("Sync triggered successfully!");
             loadPlaylists();
         } else {
             throw new Error("Update failed");
@@ -463,7 +487,7 @@ async function deletePlaylist(playlistId) {
     }
 }
 
-async function syncPlaylist(playlistId, playlistTitle) {
+async function syncPlaylist(playlistId) {
     const spinner = document.getElementById("loading-spinner");
     if (spinner) spinner.style.display = 'flex';
     let p = document.createElement('p')
@@ -477,7 +501,9 @@ async function syncPlaylist(playlistId, playlistTitle) {
         });
 
         if (response.ok) {
-            alert("Playlist items synced successfully!");
+            allVideos = [] // clear local cache
+            allPlaylists = [] // clear local cache
+            alert("Sync successfull! Data will refresh.");
             loadPlaylistsAdmin(); // Refresh to show updated item count
         } else {
             throw new Error("Failed to sync items");
@@ -580,6 +606,89 @@ async function downloadmp4(e, videoId){
         btn.disabled = false;
         btn.innerText = "Convert to mp4"
     }
+}
+// **********************************************************************************************//
+
+// **************************Search and Filter logic****************************************//
+function filterVideosByPlaylist(playlistId) {
+    const filtered = allVideos.filter(v => v.playlist_id === playlistId);
+    renderTable(filtered);
+}
+
+function handleSearch() {
+    const searchInput = document.getElementById("video-search");
+    if (!searchInput) return;
+
+    const searchTerm = document.getElementById("video-search").value.toLowerCase();
+
+    if (!allVideos || !Array.isArray(allVideos) || allVideos.length ===0) {
+        console.warn("Search attempted before videos were loaded")
+        return;
+    }
+
+    const filteredVideos = allVideos.filter(video => {
+        const title = (video.Title || "").toLowerCase();
+        const description = (video.Description || "").toLowerCase();
+
+        const matchesTilte = title.includes(searchTerm);
+
+        const matchesDescription = description.includes(searchTerm);
+
+        return matchesTilte || matchesDescription;
+        });
+
+        currentPage = 1;
+        renderTable(filteredVideos);
+        console.log(`Search for "${searchTerm}" completed. Found ${filteredVideos.length} results. `);
+}
+
+function handleSort() {
+    const sortType = document.getElementById("sort-filter").value;
+
+    if (!allVideos || allVideos.length === 0) return;
+
+    allVideos.sort((a, b) => {
+        // Ensure we have strings to work with
+        const titleA = String(a.Title || "");
+        const titleB = String(b.Title || "");
+
+        if (sortType === "newest") {
+            return new Date(b.PublishedAt) - new Date(a.PublishedAt);
+        } else if (sortType === "oldest") {
+            return new Date(a.PublishedAt) - new Date(b.PublishedAt);
+        } else if (sortType === "title-asc") {
+            const cleanA = titleA.replace(/^\W+/, "").trim(); // remove emojis with regex and any accidental space
+            const cleanB = titleB.replace(/^\W+/, "").trim(); // remove emojis with regex
+            return cleanA.localeCompare(cleanB, undefined, {
+                sensitivity: 'base', // treat a and A the same
+                numeric: true // ensure 'Part 2' comes before 'Part 10'
+            });
+        } else if (sortType === "title-dsc") {
+            const cleanA = titleA.replace(/^\W+/, "").trim();     
+            const cleanB = titleB.replace(/^\W+/, "").trim();   
+            return cleanB.localeCompare(cleanA, undefined, {
+                sensitivity: 'base',    
+                numeric: true   
+            });
+        }
+    });
+    currentPage = 1;
+    renderTable();
+}
+
+/**
+ * @param {Function} func - The function to delay
+ * @param {number} delay - TIme in milliseconds to wait
+ */
+function debounce(func, delay = 300) {
+    let timeoutId;
+    return (...args) => {
+        if (timeoutId) clearTimeout(timeoutId);
+
+        timeoutId = setTimeout(() => {
+            func.apply(null, args);
+        }, delay);
+    };
 }
 
 // **********************************************************************************************//

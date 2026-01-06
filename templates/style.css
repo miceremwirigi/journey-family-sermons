@@ -138,6 +138,59 @@ body {
   }
 }
 
+.filter-container {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+#video-search {
+  flex: 1;
+  padding: 12px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(45, 106, 106, 0.5);
+  color: white;
+  font-size: 1rem;
+}
+
+#video-search:focus {
+  outline: none;
+  border-color: #d4af37;
+  box-shadow: 0 0 8px rgba(212, 175, 55, 0.2);
+}
+
+#sort-filter {
+  padding: 10px;
+  background: #2d6a6a;
+  color: white;
+  border-radius: 8px;
+  border: none;
+}
+
+.search-wrapper {
+  display: flex;
+  flex: 1;
+  position: relative;
+}
+
+.search-btn {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: #d4af37;
+  cursor: pointer;
+  padding: 8px;
+  font-size: 1.2rem;
+}
+
+.search-btn:hover {
+  color: white;
+}
+
 .sermon-list table {
   border-collapse: collapse;
   width: 100%;
@@ -424,8 +477,27 @@ td .download__mp3__btn {
   }
 
   .navbar__item:first-child {
-        margin-top: 20px; /* Gives the Home link some breathing room in the mobile drawer */
+        margin-top: 20px; /* Give the Home link some breathing room in the mobile drawer */
     }
+  .filter-container {
+    flex-direction: column; 
+    gap: 10px;
+    padding: 0 10px; 
+  }
+
+  .search-wrapper {
+    width: 100%; 
+  }
+
+  #video-search {
+    width: 100%; 
+    padding-right: 45px; 
+  }
+
+  #sort-filter {
+    width: 100%; 
+    height: 45px; 
+  }
 
   /* Force table to not behave like a table anymore */
   .sermon-list table,
