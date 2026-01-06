@@ -13,8 +13,17 @@ func main() {
 	conf := config.LoadConfig()
 	db := databases.StartDatabase(conf.Environment)
 
-	_ = db.AutoMigrate(models.YoutubeVideo{})
-	_ = db.AutoMigrate(models.ThumbnailData{})
-
+	err := db.AutoMigrate(models.YoutubeVideo{}); 
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	err = db.AutoMigrate(models.ThumbnailData{}); 
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	err = db.AutoMigrate(models.YoutubePlaylist{}); 
+	if err != nil {
+		log.Fatal(err.Error())
+	}
 	log.Println("Migration successful")
 }

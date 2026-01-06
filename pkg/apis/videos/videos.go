@@ -13,46 +13,64 @@ import (
 	"gorm.io/gorm"
 )
 
+// Get Sermons from JouneyFamily uploads
 func (h *Handler) GetVideosList(c *fiber.Ctx) error {
-	// channelId := c.Params("channelId", "UCxs87BsBSzw8FC7IlvfQ5kA")
-	// fmt.Println(channelId)
+	var mainPlaylist models.YoutubePlaylist
+	conf := config.LoadConfig()
+	runes := []rune(conf.JourneyFamilyChannelID)
+	if len(runes) > 1 {
+		runes[1] = 'U'
+	}
+	mainPlaylistID := string(runes)
+
 	log.Println("fetching from db")
-	videosList := []models.YoutubeVideo{}
-	err := h.db.Model(models.YoutubeVideo{}).Find(&videosList).Error
+	// Fetch only videos linked to the Main Channel ID
+	err := h.db.Preload("Videos").First(&mainPlaylist, "id = ?", mainPlaylistID).Error
 	if err != nil {
-		return c.Status(404).JSON(apis.ErrorDataResponse(err.Error(),"Fauld to retraive video list fom DB", 404))
+		return c.Status(404).JSON(apis.ErrorDataResponse(err.Error(), "Failed to retreive sermon video list from DB", 404))
 	}
 
 	log.Println("Fetch successful")
 
-	return c.JSON(videosList)
+	return c.JSON(mainPlaylist.Videos)
 }
 
+// Fetches from youtube all links to videos of the JourneyFamilyChannel and saves to db
 func (h Handler) FetchVideoData(c *fiber.Ctx) error {
 	conf := config.LoadConfig()
-	videosList := []models.YoutubeVideo{}
+
+	// Find uploads playlist id from channel id
+	runes := []rune(conf.JourneyFamilyChannelID)
+	if len(runes) > 1 {
+		runes[1] = 'U'
+	}
+	mainPlaylistID := string(runes)
+	var mainPlaylist models.YoutubePlaylist
+	h.db.FirstOrCreate(&mainPlaylist, models.YoutubePlaylist{ID: mainPlaylistID, Title: "All Sermons"})
+
 	apiResponse := *clients.FetchChannelVideosList(conf.JourneyFamilyChannelID)
 
 	for _, item := range apiResponse.Items {
 		video := serializer.MapYouTubeItemToModel(item)
-		videosList = append(videosList, video)
 
-		// add video to database video unless it already exists 
+		// Save video
 		err := saveVideoIfNotExists(h.db, video)
 		if err != nil {
-			msg := fmt.Sprintf("Failed to create video %s", video.ID)
-			panic(msg)
+			return c.Status(500).JSON(apis.ErrorDataResponse(err.Error(), "Failed to save video info: "+video.Title, 500))
 		}
 
+		// Link video to the "All Sermons" playlist
+		err = h.db.Model(&mainPlaylist).Association("Videos").Append(&video)
+		if err != nil {
+			return c.Status(500).JSON(apis.ErrorDataResponse(err.Error(), "Failed to link video associations: "+video.Title, 500))
+		}
 	}
 
-	fmt.Printf("Successfully updated videos list %d", len(videosList))
-
-	return nil
+	return c.JSON(fiber.Map{"status": "success"})
 }
 
 func saveVideoIfNotExists(db *gorm.DB, video models.YoutubeVideo) error {
-	result := db.Where(models.YoutubeVideo{ID: video.ID}).FirstOrCreate(&video)
+	result := db.Where(models.YoutubeVideo{ID: video.ID}).Attrs(video).FirstOrCreate(&video)
 	if result.Error != nil {
 		return result.Error
 	}
@@ -69,7 +87,7 @@ func (h Handler) RepairVideoData(c *fiber.Ctx) error {
 		video := serializer.MapYouTubeItemToModel(item)
 		videosList = append(videosList, video)
 
-		// add video to database video unless it already exists 
+		// add video to database video unless it already exists
 		err := saveVideoEvenIfItExists(h.db, video)
 		if err != nil {
 			msg := fmt.Sprintf("Failed to create or update video %s", video.ID)

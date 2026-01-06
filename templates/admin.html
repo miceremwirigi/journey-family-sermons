@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/x-icon" href="static/favicon.jpg" onerror="this.onerror=null; this.href='favicon.jpg';">
     <link rel="stylesheet" href="static/style.css" onerror="this.onerror=null; this.href='style.css';">
-    <title>Journey Family Resources</title>
+    <title>Journey Family Admin</title>
 </head>
 <body>
     <div class="header">
         <div class="navbar__container">
             <a href="/" style="display: flex; align-items: center; text-decoration: none;">
-            <img src="static/favicon.png" alt="" onerror="this.onerror=null; this.src='favicon.png';">
-            <span id="navbar__logo">Sermons</span>
+                <img src="static/favicon.png" alt="" onerror="this.onerror=null; this.src='favicon.png';">
+                <span id="navbar__logo">Back</span>
             </a>
             <div class="navbar__toggle" id="mobile-menu">
                 <span class="bar"></span>
@@ -20,29 +20,9 @@
                 <span class="bar"></span>
             </div>
             <ul class="navbar__menu" id="navbar__menu">
-                <li class="navbar__item admin-nav-item">
-                    <a href="/admin" class="navbar__links">MANAGE</a>
+                <li class="navbar__item home-nav-item">
+                    <a href="/" class="navbar__links">Home</a>
                 </li>
-                <li class="navbar__item">
-                    <a href="#" id="navlist-toggle" class="navbar__links">
-                        Setlists
-                    </a>
-                </li>
-                <!-- <li class="navbar__item">
-                    <a href="#" class="navbar__links">
-                        Sort
-                    </a>
-                </li>
-                <li class="navbar__item">
-                    <a href="#" class="navbar__links">
-                        Filter
-                    </a>
-                </li>
-                <li class="navbar__item">
-                    <a href="#" class="navbar__links"
-                        class="search-bar"> Search
-                    </a>
-                </li> -->
             </ul>
         </div>
     </div>
@@ -51,19 +31,30 @@
             <div class="spinner-container" id="loading-spinner">
                 <span class="loader"></span>
             </div>
+            <div class="admin-controls" style="padding: 20px; border-bottom: 1px solid rgba(45, 106, 106, 0.3);">
+                <div class="add_playlist_form">
+                    <form id="playlist-form" style="display: flex; gap: 10px; margin-bottom: 20px;">
+                        <input type="text" name="playlist-url" id="playlist-url-1" 
+                            placeholder="Enter YouTube Playlist URL" 
+                            style="flex-grow: 1; padding: 10px; border-radius: 4px; background: #1a2a2a; color: white; border: 1px solid #2d6a6a;">
+                        <button type="submit" class="download__mp3__btn">Track Playlist</button>
+                    </form>
+                </div>
+                <div class="refresh-repo" style="display: flex; gap: 10px;">
+                    <button class="download__mp3__btn" onclick="triggerUpdate('/videos/sync')">Sync Sermons</button>
+                    <button class="download__mp3__btn" onclick="triggerUpdate('/sync')">Sync All Playlists</button>
+                </div>
+            </div>
             <table>
                 <thead>
-                    <!-- <th>#</th> -->
-                    <!-- <th>Video</th>
-                    <th>Title</th>
-                    <th>Date</th>
-                    <th>Button</th> -->
+                    Playlists
                 </thead>
                 <tbody>
-                    <tr><td colspan="5">Loading Sermons ...</td></tr>
+                    <tr><td colspan="5">Loading Playlists ...</td></tr>
                 </tbody>
             </table>
             <div id="pagination-controls" class="pagination"></div>
+
         </div>
     </div>
     <div class="footer"></div>  

@@ -3,6 +3,7 @@ package routes
 import (
 	"github.com/gofiber/fiber/v2"
 	downloads "github.com/miceremwirigi/journey-family-sermons/m/pkg/apis/download"
+	"github.com/miceremwirigi/journey-family-sermons/m/pkg/apis/playlists"
 	"github.com/miceremwirigi/journey-family-sermons/m/pkg/apis/videos"
 	"gorm.io/gorm"
 )
@@ -12,6 +13,10 @@ func RegisterRoutes(app *fiber.App, db *gorm.DB) {
 
 	videoHandler := videos.Handler{}
 	videoHandler.RegisterVideoRoutes(db, videoRoutes)
+
+	playlistRoutes := app.Group("/playlists")
+	playlistHandler := playlists.Handler{}
+	playlistHandler.RegisterPlaylistRoutes(db, playlistRoutes)
 
 	downloadsRoutes := app.Group("/download")
 

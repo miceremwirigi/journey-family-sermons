@@ -11,16 +11,17 @@ type YoutubeVideo struct {
 	ID          string `gorm:"primaryKey"`
 	Title       string `gorm:"index"`
 	Description string
-	PublishedAt time.Time     `gorm:"index"`
-	Thumbnails  ThumbnailData `gorm:"type:jsonb"` // Stores thumbnails as a JSON column in DB
+	PublishedAt time.Time         `gorm:"index"`
+	Thumbnails  ThumbnailData     `gorm:"type:jsonb"`
+	Playlists   []YoutubePlaylist `gorm:"many2many:playlist_videos;"`
 }
 
 type ThumbnailData struct {
-	DefaultURL string    `gorm:"primaryKey"`
-	MediumURL  string    	
-	HighURL    string    	
-	Standard   string 	
-	Maxres     string 	
+	DefaultURL string `gorm:"primaryKey"`
+	MediumURL  string
+	HighURL    string
+	Standard   string
+	Maxres     string
 }
 
 // Value implements the driver.Valuer interface for GORM to save as JSON

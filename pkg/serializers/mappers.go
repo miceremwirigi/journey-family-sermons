@@ -17,3 +17,15 @@ func MapYouTubeItemToModel(item YouTubeItem) models.YoutubeVideo {
 		},
 	}
 }
+
+// In pkg/serializers/youtube.go
+func MapPlaylistResponseToModel(pItem YouTubeItem, collaborators []string, fullUrl string) models.YoutubePlaylist {
+	return models.YoutubePlaylist{
+		ID:           pItem.ID,
+		Title:        pItem.Snippet.Title,
+		Authors:      collaborators,
+		Url:          fullUrl,
+		ItemCount:    pItem.ContentDetails.ItemCount, // Note: You need to add ContentDetails to your YouTubeItem struct
+		ThumbnailUrl: pItem.Snippet.Thumbnails.High.URL,
+	}
+}
