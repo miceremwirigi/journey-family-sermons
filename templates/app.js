@@ -203,7 +203,7 @@ function renderTable(dataToRender = allVideos) {
                 </iframe>
             </td>
             <td data-label="Title">${video.Title}</td>
-            <td data-label="Date">${new Date(video.PublishedAt).toLocaleDateString('en-GB')}</td>
+           <!-- <td data-label="Date">${new Date(video.PublishedAt).toLocaleDateString('en-GB')}</td> -->
             <td data-label="Action">
                 <button class="download__mp3__btn"
                     onclick="event.stopPropagation(); downloadmp3(event, '${video.ID}')">
