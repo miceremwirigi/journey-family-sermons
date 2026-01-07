@@ -53,7 +53,7 @@ async function loadSermonVideos() {
     }
 }
 
-    // Toggle Controller ti switch video table list display from playlist to playlist
+    // Toggle Controller to switch video table list display from playlist to playlist
 function toggleListDisplay() {
     const listToggle = document.getElementById('navlist-toggle');
     const navbarLogo = document.getElementById('navbar__logo');
@@ -183,15 +183,17 @@ function renderTable(dataToRender = allVideos) {
 
         tableBody.innerHTML = isSearching
             ? `
-                <tr><td colspan='5' style='text-align:center; padding: 20px;'>🔍 no matching videos yet. </td></tr>
-                <tr><td colspan='5' style='text-align:center; padding: 20px;'><a href="/admin" style="color: azure;"'>ADD</a> a playlist to track? </td></tr>
+                <tr><td colspan='5' style='text-align:center; padding: 20px;'>🔍 no matching videos in this playlist. <button onclick="clickShowPlaylistMenu();"
+                    style="color: azure;background: transparent; text-decoration: underline; font-size:1rem;">Switch Playlists?</button> </td></tr>
+                    <tr><td colspan='5' style='text-align:center; padding: 20px;'><a href="/admin" style="color: azure;"'>ADD</a> a playlist to track or 
+                    <a href="/admin" style="color: azure;"'>SYNC</a>? </td></tr>
                 `
             : `
                 <tr><td colspan='5' style='text-align:center; padding: 20px;'>No videos loaded in this list yet.</td></tr>
                 <tr><td colspan='5' style='text-align:center; padding: 20px;'>Try <a href="/admin" style="color: azure;"' >SYNC</a> the playlist.</td></tr>
                 `;
             
-        const controls = DocumentTimeline.getElementById("pagination-controls"); // clear pagination if no item is found
+        const controls = document.getElementById("pagination-controls"); // clear pagination if no item is found
         if (controls) controls.innerHTML="";
         return
     }
@@ -703,3 +705,20 @@ function debounce(func, delay = 300) {
 }
 
 // **********************************************************************************************//
+
+async function clickShowPlaylistMenu() {
+    const menu = document.querySelector('#mobile-menu');
+    const menuLinks = document.querySelector('.navbar__menu');
+
+    // 1. Force the menu to open if it's currently closed
+    if (menu && !menu.classList.contains('is-active')) {
+        menu.classList.add('is-active');
+        if (menuLinks) menuLinks.classList.add('active');
+    }
+
+    // 2. Load the playlists into the menu
+    await populatePlaylists(); 
+
+    // 3. Optional: Scroll the user to the top so they see the opened menu
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
