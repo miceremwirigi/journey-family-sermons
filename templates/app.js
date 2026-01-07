@@ -39,7 +39,7 @@ async function loadSermonVideos() {
         const response = await fetch('/videos');
         allVideos = await response.json(); // Store all data globally
         if (response.ok) {
-            renderTable();
+            handleSearch();
         } else {
             tableBody.innerHTML = `
                     <tr><td colspan='5'> <a href="/admin" style="color: azure;"' >SYNC SERMONS </a> to load videos</td></tr>
@@ -154,7 +154,7 @@ async function loadPlaylistItems(playlistId) {
             `;
         return
         }
-        renderTable();
+        handleSearch();
     } catch (error) {
         console.error("Error loading videos: ", error);
         tableBody.innerHTML = "<tr><td colspan='5'> Error loading videos.</td></tr>";
@@ -163,25 +163,20 @@ async function loadPlaylistItems(playlistId) {
     }
 }
 
-// function addsetlistitem() {
-//     const navbarMenu = document.getElementById("navbar__manu")
-//     loadedMenus
-// }
-
 function renderTable(dataToRender = allVideos) {
     const tableBody = document.querySelector(".sermon-list tbody");
     if (!tableBody) return;
     tableBody.innerHTML = "";
 
-    // Calculate start and end indices
     const start = (currentPage - 1) * rowsPerPage;
     const end = start + rowsPerPage;
     const paginatedItems = dataToRender.slice(start, end);
 
-    if (paginatedItems.length === 0) {
-        const isSearching = document.getElementById("video-search").value !== "";
+    // Check if the input actually has text
+    const hasSearchText = document.getElementById("video-search").value.trim() !== "";
 
-        tableBody.innerHTML = isSearching
+    if (paginatedItems.length === 0) {
+        tableBody.innerHTML = hasSearchText
             ? `
                 <tr><td colspan='5' style='text-align:center; padding: 20px;'>🔍 no matching videos in this playlist. <button onclick="clickShowPlaylistMenu();"
                     style="color: azure;background: transparent; text-decoration: underline; font-size:1rem;">Switch Playlists?</button> </td></tr>
@@ -193,37 +188,21 @@ function renderTable(dataToRender = allVideos) {
                 <tr><td colspan='5' style='text-align:center; padding: 20px;'>Try <a href="/admin" style="color: azure;"' >SYNC</a> the playlist.</td></tr>
                 `;
             
-        const controls = document.getElementById("pagination-controls"); // clear pagination if no item is found
-        if (controls) controls.innerHTML="";
-        return
+        const controls = document.getElementById("pagination-controls");
+        if (controls) controls.innerHTML = "";
+        return;
     }
-    paginatedItems.forEach((video, index) => {
-        const globalIndex = start + index + 1;
+
+    paginatedItems.forEach((video) => {
         const row = document.createElement("tr");
         row.className = "clickable_row";
-
         row.innerHTML = `
-            <!-- <td>${globalIndex}</td> -->
             <td>
-                <iframe width="200" height="113"
-                    src="https://www.youtube.com/embed/${video.ID}"
-                    frameborder="0" allowfullscreen>
-                </iframe>
+                <iframe width="200" height="113" src="https://www.youtube.com/embed/${video.ID}" frameborder="0" allowfullscreen></iframe>
             </td>
             <td data-label="Title">${video.Title}</td>
-           <!-- <td data-label="Date">${new Date(video.PublishedAt).toLocaleDateString('en-GB')}</td> -->
-            <td data-label="Action">
-                <button class="download__mp3__btn"
-                    onclick="event.stopPropagation(); downloadmp3(event, '${video.ID}')">
-                    Download mp3
-                </button>
-            </td>
-            <td data-label="Action2">
-                <button class="download__mp3__btn"
-                    onclick="event.stopPropagation(); downloadmp4(event, '${video.ID}')">
-                    Download mp4
-                </button>
-            </td>
+            <td data-label="Action"><button class="download__mp3__btn" onclick="event.stopPropagation(); downloadmp3(event, '${video.ID}')">MP3</button></td>
+            <td data-label="Action2"><button class="download__mp3__btn" onclick="event.stopPropagation(); downloadmp4(event, '${video.ID}')">MP4</button></td>
         `;
         tableBody.appendChild(row);
     });
@@ -647,7 +626,7 @@ function handleSearch() {
 
         const matchesDescription = description.includes(searchTerm);
 
-        return matchesTilte || matchesDescription;
+        return matchesTilte ;
         });
 
         currentPage = 1;
