@@ -2,7 +2,6 @@ package videos
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/miceremwirigi/journey-family-sermons/m/cmd/config"
@@ -23,14 +22,11 @@ func (h *Handler) GetVideosList(c *fiber.Ctx) error {
 	}
 	mainPlaylistID := string(runes)
 
-	log.Println("fetching from db")
 	// Fetch only videos linked to the Main Channel ID
 	err := h.db.Preload("Videos").First(&mainPlaylist, "id = ?", mainPlaylistID).Error
 	if err != nil {
 		return c.Status(404).JSON(apis.ErrorDataResponse(err.Error(), "Failed to retreive sermon video list from DB", 404))
 	}
-
-	log.Println("Fetch successful")
 
 	return c.JSON(mainPlaylist.Videos)
 }

@@ -336,6 +336,25 @@ td .download__mp3__btn {
   font-size: 0.8rem;
 }
 
+/* for search and filter buttons */
+
+.empty-state-cell {
+    text-align: center;
+    padding: 20px;
+    line-height: 1.6;
+}
+
+.empty-state-btn {
+    color: azure;
+    background: transparent;
+    border: none;
+    text-decoration: underline;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+/* ***************** */
+
 /* Admin Link Styling */
 .admin-nav-item {
   display: flex;
@@ -473,7 +492,7 @@ td .download__mp3__btn {
 /* Mobile view for table */
 @media screen and (max-width: 600px) {
   .content {
-    padding: 1rem;
+    padding: 1rem 0.5rem;
   }
 
   .navbar__item:first-child {
@@ -527,7 +546,6 @@ td .download__mp3__btn {
     border: none;
     position: relative;
     justify-content: center;
-    /* padding-left: 50%;  */
     text-align: left;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   }
@@ -586,3 +604,4 @@ td .download__mp3__btn {
     justify-self: center;
   }
 }
+
