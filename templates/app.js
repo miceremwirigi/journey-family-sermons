@@ -182,8 +182,14 @@ function renderTable(dataToRender = allVideos) {
         const isSearching = document.getElementById("video-search").value !== "";
 
         tableBody.innerHTML = isSearching
-            ? "<tr><td colspan='5' style='text-align:center; padding: 20px;'>🔍 videos matching your search criteria</td></tr>"
-            : "<tr><td colspan='5' style='text-align:center; padding: 20px;'>No videos available in this list</td></tr>";
+            ? `
+                <tr><td colspan='5' style='text-align:center; padding: 20px;'>🔍 no matching videos yet. </td></tr>
+                <tr><td colspan='5' style='text-align:center; padding: 20px;'><a href="/admin" style="color: azure;"'>ADD</a> a playlist to track? </td></tr>
+                `
+            : `
+                <tr><td colspan='5' style='text-align:center; padding: 20px;'>No videos loaded in this list yet.</td></tr>
+                <tr><td colspan='5' style='text-align:center; padding: 20px;'>Try <a href="/admin" style="color: azure;"' >SYNC</a> the playlist.</td></tr>
+                `;
             
         const controls = DocumentTimeline.getElementById("pagination-controls"); // clear pagination if no item is found
         if (controls) controls.innerHTML="";
