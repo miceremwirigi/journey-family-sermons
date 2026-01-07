@@ -3,7 +3,6 @@ package clients
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/gofiber/fiber/v3/client"
@@ -22,8 +21,6 @@ func FetchChannelVideosList(channelId string) *serializer.YouTubeResponse {
 	uploadsPlaylist = string(runes)
 
 	url := fmt.Sprintf("https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=%s&channelType=any&type=video&maxResults=50&key=%s", uploadsPlaylist, conf.YoutubeDataApiKey)
-	log.Println(url)
-
 	client := client.New()
 	client.AddHeader("Accept", "application/json")
 	client.SetTimeout(30 * time.Second)
@@ -40,7 +37,6 @@ func FetchChannelVideosList(channelId string) *serializer.YouTubeResponse {
 		panic(err)
 	}
 
-	log.Println(items)
 	return &items
 }
 
@@ -72,14 +68,12 @@ func executeYouTubeRequest(baseUrl string, pageToken string) *serializer.YouTube
 	c.AddHeader("Accept", "application/json")
 	resp, err := c.Get(url)
 	if err != nil {
-		log.Printf("Request error: %v", err)
 		return nil
 	}
 	defer resp.Close()
 
 	var result serializer.YouTubeResponse
 	if err := json.Unmarshal(resp.Body(), &result); err != nil {
-		log.Printf("Unmarshal error: %v", err)
 		return nil
 	}
 	return &result

@@ -172,20 +172,22 @@ function renderTable(dataToRender = allVideos) {
     const end = start + rowsPerPage;
     const paginatedItems = dataToRender.slice(start, end);
 
-    // Check if the input actually has text
     const hasSearchText = document.getElementById("video-search").value.trim() !== "";
 
     if (paginatedItems.length === 0) {
         tableBody.innerHTML = hasSearchText
             ? `
-                <tr><td colspan='5' style='text-align:center; padding: 20px;'>🔍 no matching videos in this playlist. <button onclick="clickShowPlaylistMenu();"
-                    style="color: azure;background: transparent; text-decoration: underline; font-size:1rem;">Switch Playlists?</button> </td></tr>
-                    <tr><td colspan='5' style='text-align:center; padding: 20px;'><a href="/admin" style="color: azure;"'>ADD</a> a playlist to track or 
-                    <a href="/admin" style="color: azure;"'>SYNC</a>? </td></tr>
+                <tr><td colspan='5' class="empty-state-cell">🔍 No matching videos in this playlist. 
+                    <button onclick="clickShowPlaylistMenu();" class="empty-state-btn">Switch Playlists?</button> 
+                </td></tr>
+                <tr><td colspan='5' class="empty-state-cell">
+                    <a href="/admin" style="color: azure;">ADD</a> a playlist to track or 
+                    <a href="/admin" style="color: azure;">SYNC</a>? 
+                </td></tr>
                 `
             : `
-                <tr><td colspan='5' style='text-align:center; padding: 20px;'>No videos loaded in this list yet.</td></tr>
-                <tr><td colspan='5' style='text-align:center; padding: 20px;'>Try <a href="/admin" style="color: azure;"' >SYNC</a> the playlist.</td></tr>
+                <tr><td colspan='5' class="empty-state-cell">No videos loaded in this list yet.</td></tr>
+                <tr><td colspan='5' class="empty-state-cell">Try <a href="/admin" style="color: azure;">SYNC</a> the playlist.</td></tr>
                 `;
             
         const controls = document.getElementById("pagination-controls");
@@ -198,11 +200,34 @@ function renderTable(dataToRender = allVideos) {
         row.className = "clickable_row";
         row.innerHTML = `
             <td>
-                <iframe width="200" height="113" src="https://www.youtube.com/embed/${video.ID}" frameborder="0" allowfullscreen></iframe>
+                <iframe width="200" height="113" 
+                    src="https://www.youtube.com/embed/${video.ID}?rel=0&enablejsapi=1" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen>
+                </iframe>
             </td>
             <td data-label="Title">${video.Title}</td>
-            <td data-label="Action"><button class="download__mp3__btn" onclick="event.stopPropagation(); downloadmp3(event, '${video.ID}')">MP3</button></td>
-            <td data-label="Action2"><button class="download__mp3__btn" onclick="event.stopPropagation(); downloadmp4(event, '${video.ID}')">MP4</button></td>
+            <td data-label="Action">
+                <button class="download__mp3__btn" onclick="event.stopPropagation(); downloadmp3(event, '${video.ID}')">
+                    MP3
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                </button>
+            </td>
+            <td data-label="Action2">
+                <button class="download__mp3__btn" onclick="event.stopPropagation(); downloadmp4(event, '${video.ID}')">
+                    MP4
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                </button>
+            </td>
         `;
         tableBody.appendChild(row);
     });

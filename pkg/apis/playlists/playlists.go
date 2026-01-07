@@ -1,7 +1,6 @@
 package playlists
 
 import (
-	"log"
 	"net/url"
 
 	"github.com/gofiber/fiber/v2"
@@ -55,7 +54,6 @@ func (h *Handler) GetPlaylistVideos(c *fiber.Ctx) error {
 
 // Add a playlist to be tracked in db
 func (h *Handler) AddPlaylist(c *fiber.Ctx) error {
-	log.Println("adding playlist")
 	var body struct {
 		Url string `json:"url"`
 	}
